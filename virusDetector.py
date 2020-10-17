@@ -6,14 +6,13 @@ except ImportError:
 
 domain ='domains'
 ipAddress = 'ip_addresses'
-hashes = 'hashes'
+hashes = 'files'
 urls = 'urls'
 search_type = ''
-
-base_url = 'https://www.virustotal.com/api/v3/{0}/{1}'
-hash_detection_url = 'https://www.virustotal.com/api/v3/monitor_partner/hashes/sha256/analyses'
-
 api_key = "781e754b51c8c6d74a392526caab0faeb7a053fd85cbb6ac99904d734d21ad6e"
+base_url = 'https://www.virustotal.com/api/v3/{0}/{1}'
+
+
 request_header = {'x-apikey': api_key}
 
 #ask user for search type (url, ip_address, hash)
@@ -35,8 +34,8 @@ else :
 search_query = input('please enter your search query:')
 
 #print all detections with result (clean || malicious)
-def detect_input(type,query,url):
-    url = url.format(type,query)
+def detect_input(type,query):
+    url = base_url.format(type,query)
     try:
         response = requests.get(url,headers=request_header)
         result = json.loads(response.text)
@@ -57,9 +56,9 @@ def detect_input(type,query,url):
         print('error while requesting {0}'.format(query))
 
 if (search_type == hashes):
-    detect_input(search_type,search_query,hash_detection_url)
+    detect_input(search_type,search_query)
 elif(search_type == urls):
     encoded_url = base64.urlsafe_b64encode(search_query.encode()).decode().strip("=")
-    detect_input(search_type,encoded_url,base_url)
+    detect_input(search_type,encoded_url)
 else:
-    detect_input(search_type,search_query,base_url)
+    detect_input(search_type,search_query)
